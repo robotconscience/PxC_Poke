@@ -29,6 +29,7 @@ float scaleX = 1024.0 / 320.0;
 float scaleY = 768.0 / 240.0;
 
 void setup() {
+  frameRate(60);
   size(1024, 768, P3D);
   smooth();
   
@@ -71,12 +72,13 @@ void draw() {
     // finger can really be any one of five, but we do stop at the first one...
     for (int i = 0;i<5;i++) {
       if (hands.primaryHand[i].x >0) { //check to see if it's null
-        myFace.updateFinger( (float) (320.0f - hands.primaryHand[i].x) / 320.f, (float) hands.primaryHand[i].y / 240.f );
+        myFace.updateFinger( (float) (320.0f - hands.primaryHand[i].x) / 320.f, (float) hands.primaryHand[i].y / 240.f, hands.primaryHand[i].z );
         //ellipse(width - hands.primaryHand[i].x * scaleX, hands.primaryHand[i].y * scaleY, hands.primaryHand[i].z, hands.primaryHand[i].z);
         if ( hands.primaryHand[i].z > pokeThreshold ){
           if ( !bPoking ){
             bPoking = true;
             poke( myFace.finger );
+            myFace.finger.z -= 2000;
           }
         } else {
           bPoking = false;
@@ -113,6 +115,7 @@ void draw() {
     popMatrix();
     
     pushMatrix();
+    //translate(0,0,-1000);
     theirFace.drawEnemy(255);
     popMatrix();
     
