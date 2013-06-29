@@ -7,7 +7,8 @@ PXCUPipeline session;
 Hands hands;
 Landmarks lm;
 
-// opponent's face
+// faces
+Face myFace = new Face();
 Face theirFace = new Face();
 
 boolean bPoking = false;
@@ -29,7 +30,8 @@ float scaleX = 1024.0 / 320.0;
 float scaleY = 768.0 / 240.0;
 
 void setup() {
-  size(1024, 768);
+  size(1024, 768, P3D);
+  smooth();
   
   // get to brewin'
   sb = new Spacebrew(this);
@@ -37,12 +39,12 @@ void setup() {
   // declare your publishers
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
-  sb.addPublish( "hit", "range", bHit );
+  sb.addPublish( "poke", "range", bHit );
 
   // declare your subscribers
   sb.addSubscribe( "eyes", "eyes" );
   sb.addSubscribe( "finger", "point" );
-  sb.addSubscribe( "hit", "range" );
+  sb.addSubscribe( "poke", "range" );
 
   // connect!
   sb.connect(server, name, description );
@@ -67,11 +69,11 @@ void draw() {
     // finger can really be any one of five, but we do stop at the first one...
     for (int i = 0;i<5;i++) {
       if (hands.primaryHand[i].x >0) { //check to see if it's null
-        ellipse(width - hands.primaryHand[i].x * scaleX, hands.primaryHand[i].y * scaleY, hands.primaryHand[i].z, hands.primaryHand[i].z);
+        myFace.updateFinger( (float) (320.0f - hands.primaryHand[i].x) / 320.f, (float) hands.primaryHand[i].y / 240.f );
+        //ellipse(width - hands.primaryHand[i].x * scaleX, hands.primaryHand[i].y * scaleY, hands.primaryHand[i].z, hands.primaryHand[i].z);
         if ( hands.primaryHand[i].z > pokeThreshold ){
           if ( !bPoking ){
             bPoking = true;
-            background(255,0,0);
             poke( hands.primaryHand[i].x, hands.primaryHand[i].y );
           }
         } else {
@@ -83,7 +85,8 @@ void draw() {
         break;
       }
       if (hands.secondaryHand[i].x >0) { //check to see if it's null
-        ellipse(width - hands.secondaryHand[i].x * 2.0, hands.secondaryHand[i].y * 2.0, hands.secondaryHand[i].z, hands.secondaryHand[i].z);
+        myFace.updateFinger( (float) (320.0f - hands.secondaryHand[i].x) / 320.f, (float) hands.secondaryHand[i].y / 240.f );
+        //ellipse(width - hands.secondaryHand[i].x * 2.0, hands.secondaryHand[i].y * 2.0, hands.secondaryHand[i].z, hands.secondaryHand[i].z);
         if ( hands.secondaryHand[i].z > pokeThreshold ){
           background(255,0,0);
         }
@@ -95,14 +98,23 @@ void draw() {
       }
     }
     
-    pushMatrix();
-    scale(scaleX/2.0,scaleY/2.0);
-    lm.drawFace();
-    popMatrix();
-    
     // send face
     eyeJSON = "{\"left\":{\"x\":"+ lm.leftEye.x / 640.0f +", \"y\":"+ lm.leftEye.y / 480.f +"},\"right\":{\"x\":" + lm.rightEye.x / 640.f +", \"y\":" + lm.rightEye.y / 480.f +"}}";
+    myFace.updateEyes( lm.leftEye.x / 640.0f, lm.leftEye.y / 480.f, lm.rightEye.x / 640.f, lm.rightEye.y / 480.f);
     sb.send("eyes", "eyes", eyeJSON );
+    
+    // render!
+    
+    pushMatrix();
+    translate(0,0,200);
+    myFace.drawMe(50);
+    popMatrix();
+    
+    pushMatrix();
+    translate(0,0,-300);
+    theirFace.drawEnemy(255);
+    popMatrix();
+    
     session.ReleaseFrame();
   }
 }
@@ -125,7 +137,7 @@ void onCustomMessage( String name, String type, String value ) {
   
      //YourFinger.update();
    } else if (name.equals("poke")) {
-     //Hit();
+     
    }
    
 }
@@ -141,11 +153,11 @@ void poke( float x, float y ){
   switch ( test ){
     case 1:
       // left eye hit!
-      sb.send( "hit", 0 );
+      sb.send( "poke", 0 );
       break;
     case 2:
       // right eye hit!
-      sb.send( "hit", 1 );
+      sb.send( "poke", 1 );
       break;
     default:
       // crickets

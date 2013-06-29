@@ -30,12 +30,24 @@ class Face {
     return 0;
   }
   
-  void draw(){
+  void drawMe( float alpha ){
+    noStroke();
+    fill( 255, alpha );
+    ellipse(leftEye.x, leftEye.y, 20, 20 );
+    ellipse(rightEye.x, rightEye.y, 20, 20 );
+    ellipse( finger.x, finger.y, 20, 20 );
+  }
+  
+  void drawEnemy( float alpha ){
+    stroke(255, alpha);
     line(leftEye.x-10, leftEye.y-10,leftEye.x+10, leftEye.y+10);
     line(leftEye.x+10, leftEye.y-10,leftEye.x-10, leftEye.y+10);
     
     line(rightEye.x-10, rightEye.y-10,rightEye.x+10, rightEye.y+10);
     line(rightEye.x+10, rightEye.y-10,rightEye.x-10, rightEye.y+10);
+    
+    fill( 255, alpha );
+    ellipse( finger.x, finger.y, 20, 20 );
   }
   
   void updateEyes( float leftX, float leftY, float rightX, float rightY ){
