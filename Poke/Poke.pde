@@ -23,10 +23,12 @@ String eyeJSON = "";
 String fingerJSON = "";
 boolean bHit = false;
 
-// incoming
+// rendering helpers
+float scaleX = 1024.0 / 320.0;
+float scaleY = 768.0 / 240.0;
 
 void setup() {
-  size(640, 480);
+  size(1024, 768);
   
   // get to brewin'
   sb = new Spacebrew(this);
@@ -64,7 +66,7 @@ void draw() {
     // finger can really be any one of five, but we do stop at the first one...
     for (int i = 0;i<5;i++) {
       if (hands.primaryHand[i].x >0) { //check to see if it's null
-        ellipse(width - hands.primaryHand[i].x * 2.0, hands.primaryHand[i].y * 2.0, hands.primaryHand[i].z, hands.primaryHand[i].z);
+        ellipse(width - hands.primaryHand[i].x * scaleX, hands.primaryHand[i].y * scaleY, hands.primaryHand[i].z, hands.primaryHand[i].z);
         if ( hands.primaryHand[i].z > pokeThreshold ){
           if ( !bPoking ){
             bPoking = true;
@@ -75,7 +77,7 @@ void draw() {
           bPoking = false;
         }
         // send raw finger
-        fingerJSON = "{\"x\": " + hands.primaryHand[i].x + " ,\"y\":" + hands.primaryHand[i].y + "}"; 
+        fingerJSON = "{\"x\": " + (float) (320.0f - hands.primaryHand[i].x) / 320.f + " ,\"y\":" + (float) hands.primaryHand[i].y / 240.f + "}"; 
         sb.send("finger", "point", fingerJSON );
         break;
       }
@@ -86,13 +88,16 @@ void draw() {
         }
         
         // send raw finger
-        fingerJSON = "{\"x\": " + hands.primaryHand[i].x / 320.f + " ,\"y\":" + hands.primaryHand[i].y / 240.f + "}"; 
+        fingerJSON = "{\"x\": " + (float) (320.0f - hands.secondaryHand[i].x) / 320.f + " ,\"y\":" + (float) hands.secondaryHand[i].y / 240.f + "}"; 
         sb.send("finger", "point", fingerJSON );
         break;
       }
     }
     
+    pushMatrix();
+    scale(scaleX/2.0,scaleY/2.0);
     lm.drawFace();
+    popMatrix();
     
     // send face
     eyeJSON = "{\"left\":{\"x\":"+ lm.leftEye.x / 640.0f +", \"y\":"+ lm.leftEye.y / 480.f +"},\"right\":{\"x\":" + lm.rightEye.x / 640.f +", \"y\":" + lm.rightEye.y / 480.f +"}}";
