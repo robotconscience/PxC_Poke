@@ -8,16 +8,15 @@ Hands hands;
 Landmarks lm;
 
 // faces
-Face myFace = new Face();
-Face theirFace = new Face();
+Face myFace, theirFace;
 
 boolean bPoking = false;
 int pokeThreshold = 75;
 
 // Spacebrew
 Spacebrew sb;
-String server="sandbox.spacebrew.cc";
-String name="Spacebrew PxC Poke";
+String server="10.200.82.197";
+String name="Spacebrew PxC Poke BR";
 String description ="";
 
 // messages
@@ -33,13 +32,16 @@ void setup() {
   size(1024, 768, P3D);
   smooth();
   
+  myFace = new Face();
+  theirFace = new Face();
+  
   // get to brewin'
   sb = new Spacebrew(this);
   
   // declare your publishers
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
-  sb.addPublish( "poke", "range", bHit );
+  sb.addPublish( "poke", "range", 0 );
 
   // declare your subscribers
   sb.addSubscribe( "eyes", "eyes" );
@@ -74,7 +76,7 @@ void draw() {
         if ( hands.primaryHand[i].z > pokeThreshold ){
           if ( !bPoking ){
             bPoking = true;
-            poke( hands.primaryHand[i].x, hands.primaryHand[i].y );
+            poke( myFace.finger );
           }
         } else {
           bPoking = false;
@@ -106,12 +108,11 @@ void draw() {
     // render!
     
     pushMatrix();
-    translate(0,0,200);
+    translate(0,0,100);
     myFace.drawMe(50);
     popMatrix();
     
     pushMatrix();
-    translate(0,0,-300);
     theirFace.drawEnemy(255);
     popMatrix();
     
@@ -148,8 +149,8 @@ void onCustomMessage( String name, String type, String value ) {
   it's a hit
 ********************************************/
 
-void poke( float x, float y ){
-  int test = theirFace.checkHit(x, y);
+void poke( PVector finger ){
+  int test = theirFace.checkHit(finger.x, finger.y);
   switch ( test ){
     case 1:
       // left eye hit!
