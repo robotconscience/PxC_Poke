@@ -32,8 +32,8 @@ void setup() {
   sb = new Spacebrew(this);
   
   // declare your publishers
-  sb.addPublish( "eyes", "custom", eyeJSON );
-  sb.addPublish( "finger", "custom", fingerJSON );
+  sb.addPublish( "eyes", "eyes", eyeJSON );
+  sb.addPublish( "finger", "point", fingerJSON );
   sb.addPublish( "hit", "range", bHit );
 
   // declare your subscribers
