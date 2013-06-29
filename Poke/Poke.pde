@@ -86,7 +86,7 @@ void draw() {
         }
         
         // send raw finger
-        fingerJSON = "{\"x\": " + hands.primaryHand[i].x + " ,\"y\":" + hands.primaryHand[i].y + "}"; 
+        fingerJSON = "{\"x\": " + hands.primaryHand[i].x / 320.f + " ,\"y\":" + hands.primaryHand[i].y / 240.f + "}"; 
         sb.send("finger", "point", fingerJSON );
         break;
       }
@@ -95,7 +95,7 @@ void draw() {
     lm.drawFace();
     
     // send face
-    eyeJSON = "{\"left\":{\"x\":"+ lm.leftEye.x +", \"y\":"+ lm.leftEye.y +"},\"right\":{\"x\":" + lm.rightEye.x +", \"y\":" + lm.rightEye.y +"}}";
+    eyeJSON = "{\"left\":{\"x\":"+ lm.leftEye.x / 640.0f +", \"y\":"+ lm.leftEye.y / 480.f +"},\"right\":{\"x\":" + lm.rightEye.x / 640.f +", \"y\":" + lm.rightEye.y / 480.f +"}}";
     sb.send("eyes", "eyes", eyeJSON );
     session.ReleaseFrame();
   }
