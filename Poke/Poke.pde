@@ -1,5 +1,6 @@
 import spacebrew.*;
 import intel.pcsdk.*;
+import org.json.*;
 
 // finger + face tracking
 PXCUPipeline session;
@@ -107,8 +108,28 @@ void draw() {
 }
 
 // coming from andy
-void onCustomMessage( String name, String value ){
+void onCustomMessage( String name, String type, String value ) {
+
+   org.json.JSONObject m = new org.json.JSONObject( value );
+   
+   if (name.equals("eyes"))
+   {
+     org.json.JSONObject l = m.getJSONObject("left");
+     org.json.JSONObject r = m.getJSONObject("right");
+     
+     theirFace.updateEyes((float)l.getDouble("x"),(float)l.getDouble("y"),(float)r.getDouble("x"),(float)r.getDouble("y"));     
+     
+   } else if (name.equals("finger")) {
+     
+     theirFace.updateFinger((float)m.getDouble("x"), (float)m.getDouble("y"));
+  
+     //YourFinger.update();
+   } else if (name.equals("poke")) {
+     //Hit();
+   }
+   
 }
+
 
 /********************************************
   POKE: Check against current face, send if

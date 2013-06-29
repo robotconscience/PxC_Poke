@@ -3,6 +3,7 @@ class Face {
   // props
   PVector leftEye   = new PVector(0,0);
   PVector rightEye   = new PVector(0,0);
+  PVector finger     = new PVector(0,0);
   
   // hit counter
   int leftHit   = 0;
@@ -30,16 +31,20 @@ class Face {
   }
   
   void draw(){
-    ellipse(leftEye.x, leftEye.y, 20,20);
-    ellipse(rightEye.x, rightEye.y, 20,20);
+    line(leftEye.x-10, leftEye.y-10,leftEye.x+10, leftEye.y+10);
+    line(leftEye.x+10, leftEye.y-10,leftEye.x-10, leftEye.y+10);
+    
+    line(rightEye.x-10, rightEye.y-10,rightEye.x+10, rightEye.y+10);
+    line(rightEye.x+10, rightEye.y-10,rightEye.x-10, rightEye.y+10);
   }
   
   void updateEyes( float leftX, float leftY, float rightX, float rightY ){
-    leftEye.set(leftX, leftY, 0);
-    rightEye.set(rightX, rightY, 0);
+    leftEye.set(leftX * width, leftY * height, 0);
+    rightEye.set(rightX * width, rightY * height, 0);
   }
   
   void updateFinger( float x, float y ){
+    finger.set(x * width,y * height);
   }
 
 }
