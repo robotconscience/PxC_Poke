@@ -41,7 +41,8 @@ void onBooleanMessage( String name, boolean value ){}
 void onStringMessage( String name, String value ){
   if ( name.equals("playerReady") ){
     Player player = new Player();
-    player.index = playerMap.size() + 1;
+    player.index = value.indexOf("1") > 0 ? 1 : 2;
+    println("Name: "+value+", index: "+ player.index);
     
     playerMap.put( value, player );
     if ( playerMap.size() > 1 ){
@@ -53,7 +54,11 @@ void onStringMessage( String name, String value ){
     println(playerMap.size());
   } else if ( name.equals("poke" ) ){
     // sending val as name:poke (poke = 0: left, 1:right)
-    String[] vals = name.split(":");
+    String[] vals = value.split(":");
+    
+    println( vals.length +" VALUES?");
+    println( vals[0] );
+    
     String pokeSource = vals[0]; // where poke came from
     int    pokeType   = int(vals[1]);
     

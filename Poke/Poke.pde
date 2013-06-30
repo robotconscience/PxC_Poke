@@ -155,6 +155,12 @@ void draw() {
   
 }
 
+void onRangeMessage( String name, int value ){
+  if (name.equals("poke")){
+    myFace.onPoke( value );
+  }
+}
+
 void onStringMessage ( String name, String value ){
   println("got message "+name);
 }
@@ -201,14 +207,15 @@ void onCustomMessage( String name, String type, String value ) {
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
   println(test);
+  if ( mousePressed) test = 1;
   switch ( test ){
     case 1:
       // left eye hit!
-      sb.send( "poke", name + ":" + 0 );
+      sb.send( "poke", name + ":0" );
       break;
     case 2:
       // right eye hit!
-      sb.send( "poke", name + ":" + 1 );
+      sb.send( "poke", name + ":1" );
       break;
     default:
       // crickets
