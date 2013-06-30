@@ -56,7 +56,7 @@ void setup() {
   // publishers: pxc stuff
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
-  sb.addPublish( "poke", "range", 0 );
+  sb.addPublish( "poke", "string", "" );
 
   // publishers: game logic
   sb.addPublish( "playerReady", "string", "" );
@@ -110,7 +110,6 @@ void draw() {
     session.ReleaseFrame();
   }
   
-
   // render!
   
   pushMatrix();
@@ -175,11 +174,11 @@ void poke( PVector finger ){
   switch ( test ){
     case 1:
       // left eye hit!
-      sb.send( "poke", 0 );
+      sb.send( "poke", name + ":" + 0 );
       break;
     case 2:
       // right eye hit!
-      sb.send( "poke", 1 );
+      sb.send( "poke", name + ":" + 1 );
       break;
     default:
       // crickets

@@ -1,5 +1,6 @@
 import spacebrew.*;
 import java.util.Map;
+import java.util.Iterator;
 
 String server="10.200.82.197";
 String name="Poke Server";
@@ -8,7 +9,7 @@ String description ="";
 Spacebrew sb;
 
 // map of players to hits
-HashMap<String,Integer> playerMap = new HashMap<String,Integer>();
+HashMap<String,Player> playerMap = new HashMap<String,Player>();
 
 void setup() {
     size(200, 200);
@@ -18,7 +19,8 @@ void setup() {
     // add each thing you publish to
     sb.addPublish( "startGame", "boolean", false ); 
     sb.addPublish( "endGame", "boolean", false ); 
-    sb.addPublish( "poke", "boolean", true );
+    sb.addPublish( "pokePlayer1", "range", 0 );
+    sb.addPublish( "pokePlayer2", "range", 0 );
 
     // add each thing you subscribe to
     sb.addSubscribe( "playerReady", "string" );
@@ -38,18 +40,44 @@ void onBooleanMessage( String name, boolean value ){}
 
 void onStringMessage( String name, String value ){
   if ( name.equals("playerReady") ){
-    playerMap.put( value, 0 );
+    Player player = new Player();
+    player.index = playerMap.size() + 1;
+    
+    playerMap.put( value, player );
     if ( playerMap.size() > 1 ){
       sb.send("startGame", true );
     }
   } else if ( name.equals("playerExit") ) {
     playerMap.remove( value );
     sb.send("endGame", true );
+    println(playerMap.size());
   } else if ( name.equals("poke" ) ){
-    println( "Player "+name+" poked "+ playerMap.get( name ) + 1 );
-    int val =  playerMap.get( name );
-    val++;
-    playerMap.put( name, val );
+    // sending val as name:poke (poke = 0: left, 1:right)
+    String[] vals = name.split(":");
+    String pokeSource = vals[0]; // where poke came from
+    int    pokeType   = int(vals[1]);
+    
+    Iterator it = playerMap.entrySet().iterator();
+    while (it.hasNext()) {
+        Map.Entry pairs = (Map.Entry)it.next();
+//        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+        // should only be 2 players, so return once we find
+        //  the other one
+        if ( !pairs.getKey().equals(pokeSource) ){
+          Player p = (Player) pairs.getValue();
+          if ( pokeType == 0 ){
+            p.hitCountLeft++;
+          } else if ( pokeType == 1 ){
+            p.hitCountRight++;
+          }
+          if ( p.index == 1 ){
+            sb.send("pokePlayer1", pokeType );
+          } else {
+            sb.send("pokePlayer2", pokeType );
+          }
+          break;
+        }
+    }
   }
 }
 
