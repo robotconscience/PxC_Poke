@@ -33,6 +33,8 @@ boolean bGameStarted = false;
 boolean bGameEnded   = false;
 int     gameStartedAt = 0;
 
+int     lastSent     = 0;
+
 void setup() {
   frameRate(60);
   size(1024, 768, P3D);
@@ -85,40 +87,59 @@ void setup() {
 
 void exit(){
   sb.send("playerExit", name );
+  println("trying to exit");
+  super.exit();
 }
 
 void draw() { 
+  // say we're ready if we haven't started
+  if ( !bGameStarted ){
+    if ( millis() - lastSent > 1000 ){
+      lastSent = millis();
+      sb.send("playerReady", name );
+    }
+  }
+  
   background(0);
   if ( session.AcquireFrame(true ) ){
     hands.update(session, false);
     lm.update(session, false);
     
     updateFingers();
-    updateFace();
-    
-    // render!
-    
-    pushMatrix();
-    translate(0,0,100);
-    myFace.drawMe(50);
-    popMatrix();
-    
+    updateFace();    
+    session.ReleaseFrame();
+  }
+  
+
+  // render!
+  
+  pushMatrix();
+  translate(0,0,100);
+  myFace.drawMe(50);
+  popMatrix();
+  
+  if ( bGameStarted ){
     pushMatrix();
     //translate(0,0,-1000);
     theirFace.drawEnemy(255);
     popMatrix();
-    
-    session.ReleaseFrame();
   }
+
+  if ( !bGameStarted ){
+    text("WAITING FOR OPPONENT!", width/2, height/2);
+  }
+
 }
 
 void onBooleanMessage( String name, boolean value ){
   if (name.equals("startGame")){
     bGameStarted = true;
     gameStartedAt = millis();
+    println("start game");
   } else if ( name.equals("endGame")){
     bGameStarted = false;
     bGameEnded   = true;
+    
   }
 }
 

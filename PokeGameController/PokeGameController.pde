@@ -45,6 +45,11 @@ void onStringMessage( String name, String value ){
   } else if ( name.equals("playerExit") ) {
     playerMap.remove( value );
     sb.send("endGame", true );
+  } else if ( name.equals("poke" ) ){
+    println( "Player "+name+" poked "+ playerMap.get( name ) + 1 );
+    int val =  playerMap.get( name );
+    val++;
+    playerMap.put( name, val );
   }
 }
 
