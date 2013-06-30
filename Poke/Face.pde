@@ -105,7 +105,6 @@ class Face {
     }
 
     updateValidStuff();
->>>>>>> 17d9cc45939e602de02959352fce2b79f91112ca
   }
   
   void drawEnemy( float alpha ){
