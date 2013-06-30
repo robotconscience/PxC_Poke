@@ -76,9 +76,9 @@ void onStringMessage( String name, String value ){
         String n = (String) pairs.getKey();
         if ( !pairs.getKey().equals(pokeSource) ){
           Player p = (Player) pairs.getValue();
-          if ( pokeType == 0 ){
+          if ( pokeType == 1 ){
             p.hitCountLeft++;
-          } else if ( pokeType == 1 ){
+          } else if ( pokeType == 2 ){
             p.hitCountRight++;
           }
           
