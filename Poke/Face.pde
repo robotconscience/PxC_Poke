@@ -41,6 +41,7 @@ class Face {
    */
   int checkHit( float x, float y ){
     PVector check = new PVector(x, y);
+    miss.set(x,y);
 //    hit.beginDraw();
 //    fill(255,0,0);
 //    ellipse(x,y,20,20);

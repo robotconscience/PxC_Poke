@@ -141,9 +141,9 @@ void draw() {
   popMatrix();
   fill(255);
   
-  if ( bGameStarted ){
+  if ( bGameStarted || mousePressed ){
     pushMatrix();
-    //translate(0,0,-1000);
+    translate(0,0,-1000);
     theirFace.drawEnemy(255);
     popMatrix();
   }
@@ -200,7 +200,7 @@ void onCustomMessage( String name, String type, String value ) {
 
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
-  
+  println(test);
   switch ( test ){
     case 1:
       // left eye hit!
@@ -211,10 +211,7 @@ void poke( PVector finger ){
       sb.send( "poke", name + ":" + 1 );
       break;
     default:
-      println("MISSED");
-      myFace.miss.x = finger.x;
-      myFace.miss.y = finger.y;
-      break;
+      // crickets
   }
 }
 
@@ -231,7 +228,7 @@ void updateFingers(){
           if ( !bPoking ){
             bPoking = true;
             poke( myFace.finger );
-            myFace.finger.z -= 2000;
+            myFace.finger.z -= 1000;
           }
         } else {
           bPoking = false;
