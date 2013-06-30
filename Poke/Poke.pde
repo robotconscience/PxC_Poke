@@ -119,7 +119,12 @@ void draw() {
   }
   
   // render!
-  
+  noFill();
+  stroke(200);
+  pushMatrix();
+  translate(width/2, height/2, -500);
+  box(width, height, 1000);
+  popMatrix();
   
   fill(0);
   pushMatrix();
@@ -136,8 +141,12 @@ void draw() {
     } else if ( millis() - gameStartedAt < 1000 ){
       str = "WAIT FOR IT...";
     }
+  } else if ( bGameEnded ){
+    fill(255,0,0);
+    str = "GAME OVER, MAN";
   }
-    text(str, -textWidth(str)/2.0,0);
+  
+  text(str, -textWidth(str)/2.0,0);
   popMatrix();
   fill(255);
   
