@@ -28,6 +28,11 @@ boolean bHit = false;
 float scaleX = 1024.0 / 320.0;
 float scaleY = 768.0 / 240.0;
 
+// rough game state stuff
+boolean bGameStarted = false;
+boolean bGameEnded   = false;
+int     gameStartedAt = 0;
+
 void setup() {
   frameRate(60);
   size(1024, 768, P3D);
@@ -39,15 +44,30 @@ void setup() {
   // get to brewin'
   sb = new Spacebrew(this);
   
-  // declare your publishers
+  // try to load from external config
+  String spacebrewConfig[] = loadStrings("spacebrew.txt");
+  if ( spacebrewConfig != null && spacebrewConfig.length > 1 ){
+    server = spacebrewConfig[0];
+    name = spacebrewConfig[1];
+  }
+  
+  // publishers: pxc stuff
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
   sb.addPublish( "poke", "range", 0 );
 
-  // declare your subscribers
+  // publishers: game logic
+  sb.addPublish( "playerReady", "string", "" );
+  sb.addPublish( "playerExit", "string", "" );
+
+  // subscribers: pxc
   sb.addSubscribe( "eyes", "eyes" );
   sb.addSubscribe( "finger", "point" );
   sb.addSubscribe( "poke", "range" );
+  
+  // subscribers: game logic
+  sb.addSubscribe( "startGame", "boolean" );
+  sb.addSubscribe( "endGame", "boolean" );
 
   // connect!
   sb.connect(server, name, description );
@@ -63,13 +83,93 @@ void setup() {
   lm = new Landmarks();
 }
 
+void exit(){
+  sb.send("playerExit", name );
+}
+
 void draw() { 
   background(0);
   if ( session.AcquireFrame(true ) ){
     hands.update(session, false);
     lm.update(session, false);
     
-    // finger can really be any one of five, but we do stop at the first one...
+    updateFingers();
+    updateFace();
+    
+    // render!
+    
+    pushMatrix();
+    translate(0,0,100);
+    myFace.drawMe(50);
+    popMatrix();
+    
+    pushMatrix();
+    //translate(0,0,-1000);
+    theirFace.drawEnemy(255);
+    popMatrix();
+    
+    session.ReleaseFrame();
+  }
+}
+
+void onBooleanMessage( String name, boolean value ){
+  if (name.equals("startGame")){
+    bGameStarted = true;
+    gameStartedAt = millis();
+  } else if ( name.equals("endGame")){
+    bGameStarted = false;
+    bGameEnded   = true;
+  }
+}
+
+void onCustomMessage( String name, String type, String value ) {
+
+   org.json.JSONObject m = new org.json.JSONObject( value );
+   
+   if (name.equals("eyes"))
+   {
+     org.json.JSONObject l = m.getJSONObject("left");
+     org.json.JSONObject r = m.getJSONObject("right");
+     
+     theirFace.updateEyes((float)l.getDouble("x"),(float)l.getDouble("y"),(float)r.getDouble("x"),(float)r.getDouble("y"));     
+     
+   } else if (name.equals("finger")) {
+     
+     theirFace.updateFinger((float)m.getDouble("x"), (float)m.getDouble("y"));
+  
+     //YourFinger.update();
+   } else if (name.equals("poke")) {
+     
+   }
+   
+}
+
+/********************************************
+  POKE: Check against current face, send if
+  it's a hit
+********************************************/
+
+void poke( PVector finger ){
+  int test = theirFace.checkHit(finger.x, finger.y);
+  switch ( test ){
+    case 1:
+      // left eye hit!
+      sb.send( "poke", 0 );
+      break;
+    case 2:
+      // right eye hit!
+      sb.send( "poke", 1 );
+      break;
+    default:
+      // crickets
+  }
+}
+
+/********************************************
+  Grab first valid fingertip + send
+********************************************/
+void updateFingers(){
+  // finger can really be any one of five, but we do stop at the first one...
     for (int i = 0;i<5;i++) {
       if (hands.primaryHand[i].x >0) { //check to see if it's null
         myFace.updateFinger( (float) (320.0f - hands.primaryHand[i].x) / 320.f, (float) hands.primaryHand[i].y / 240.f, hands.primaryHand[i].z );
@@ -101,70 +201,15 @@ void draw() {
         break;
       }
     }
-    
+}
+
+/********************************************
+  Update eyeballs
+********************************************/
+void updateFace(){
     // send face
     eyeJSON = "{\"left\":{\"x\":"+ lm.leftEye.x / 640.0f +", \"y\":"+ lm.leftEye.y / 480.f +"},\"right\":{\"x\":" + lm.rightEye.x / 640.f +", \"y\":" + lm.rightEye.y / 480.f +"}}";
     myFace.updateEyes( lm.leftEye.x / 640.0f, lm.leftEye.y / 480.f, lm.rightEye.x / 640.f, lm.rightEye.y / 480.f);
     sb.send("eyes", "eyes", eyeJSON );
-    
-    // render!
-    
-    pushMatrix();
-    translate(0,0,100);
-    myFace.drawMe(50);
-    popMatrix();
-    
-    pushMatrix();
-    //translate(0,0,-1000);
-    theirFace.drawEnemy(255);
-    popMatrix();
-    
-    session.ReleaseFrame();
-  }
-}
-
-// coming from andy
-void onCustomMessage( String name, String type, String value ) {
-
-   org.json.JSONObject m = new org.json.JSONObject( value );
-   
-   if (name.equals("eyes"))
-   {
-     org.json.JSONObject l = m.getJSONObject("left");
-     org.json.JSONObject r = m.getJSONObject("right");
-     
-     theirFace.updateEyes((float)l.getDouble("x"),(float)l.getDouble("y"),(float)r.getDouble("x"),(float)r.getDouble("y"));     
-     
-   } else if (name.equals("finger")) {
-     
-     theirFace.updateFinger((float)m.getDouble("x"), (float)m.getDouble("y"));
-  
-     //YourFinger.update();
-   } else if (name.equals("poke")) {
-     
-   }
-   
-}
-
-
-/********************************************
-  POKE: Check against current face, send if
-  it's a hit
-********************************************/
-
-void poke( PVector finger ){
-  int test = theirFace.checkHit(finger.x, finger.y);
-  switch ( test ){
-    case 1:
-      // left eye hit!
-      sb.send( "poke", 0 );
-      break;
-    case 2:
-      // right eye hit!
-      sb.send( "poke", 1 );
-      break;
-    default:
-      // crickets
-  }
 }
 
