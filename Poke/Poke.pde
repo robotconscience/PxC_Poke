@@ -60,7 +60,7 @@ void setup() {
   // publishers: pxc stuff
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
-  sb.addPublish( "poke", "range", 0 );
+  sb.addPublish( "poke", "string", "" );
 
   // publishers: game logic
   sb.addPublish( "playerReady", "string", "" );
@@ -118,13 +118,28 @@ void draw() {
     session.ReleaseFrame();
   }
   
-
   // render!
   
+  
+  fill(0);
   pushMatrix();
-  translate(0,0,100);
-  myFace.drawMe(50);
+  String str = "";
+  translate(width/2, height/2);
+  float sc = abs(sin(millis() * .001))*.5;
+  scale( 1.0 + sc,  1.0 + sc );
+  
+  if ( !bGameStarted && !bGameEnded ){
+    str = "WAITING FOR OPPONENT!";
+  } else if (bGameStarted){
+    if ( millis() - gameStartedAt > 1000 && millis() - gameStartedAt < 1500 ){
+      str = "FIGHT!";
+    } else if ( millis() - gameStartedAt < 1000 ){
+      str = "WAIT FOR IT...";
+    }
+  }
+    text(str, -textWidth(str)/2.0,0);
   popMatrix();
+  fill(255);
   
   if ( bGameStarted ){
     pushMatrix();
@@ -132,18 +147,12 @@ void draw() {
     theirFace.drawEnemy(255);
     popMatrix();
   }
-
-  if ( !bGameStarted ){
-    fill(0);
-    pushMatrix();
-    String str = "WAITING FOR OPPONENT!";
-    translate(width/2, height/2);
-    float sc = abs(sin(millis() * .001))*.5;
-    scale( 1.0 + sc,  1.0 + sc );
-    text(str, -textWidth(str)/2.0,0);
-    popMatrix();
-  }
-
+  
+  pushMatrix();
+  translate(0,0,100);
+  myFace.drawMe(50);
+  popMatrix();
+  
 }
 
 void onStringMessage ( String name, String value ){
@@ -190,25 +199,19 @@ void onCustomMessage( String name, String type, String value ) {
 ********************************************/
 
 void poke( PVector finger ){
-  
-  println("POKING");
   int test = theirFace.checkHit(finger.x, finger.y);
   println(test);
   switch ( test ){
     case 1:
       // left eye hit!
-      sb.send( "poke", 0 );
+      sb.send( "poke", name + ":" + 0 );
       break;
     case 2:
       // right eye hit!
-      sb.send( "poke", 1 );
+      sb.send( "poke", name + ":" + 1 );
       break;
     default:
-      println("missed");
-      myFace.miss.x = finger.x;
-      myFace.miss.y = finger.y;
-      break;
-      
+      // crickets
   }
 }
 
