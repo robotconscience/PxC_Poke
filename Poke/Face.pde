@@ -82,7 +82,7 @@ class Face {
       
       finger.z *= .8;
     }
-if (miss.x != 0)
+    if (miss.x != 0)
     {
       pushMatrix();
       translate(miss.x, miss.y);
@@ -123,15 +123,17 @@ if (miss.x != 0)
       popMatrix();
     }
     
-
-    
     updateValidStuff();
   }
   
   void drawFace( float alpha, boolean myFace) {
     if ( bHasFace ){
-      fill( 150, alpha );
-        
+      if ( myFace ){
+        noFill();
+        stroke( 150, alpha );
+      } else {
+        fill( 150, alpha );
+      }      
       float centerX = (rightEye.x + leftEye.x)/ 2.0;
       float centerY = (rightEye.y + leftEye.y)/ 2.0;
       
@@ -146,18 +148,16 @@ if (miss.x != 0)
       if (!myFace)
       {
           pushStyle();
-    noFill();
-    strokeWeight(3*leftHit);
-    stroke(255,0,0);
-    ellipse(leftEye.x, leftEye.y, 20, 20 );
-    
-    strokeWeight(3*leftHit);
-    stroke(255,0,0);
-    ellipse(rightEye.x, rightEye.y, 20, 20);
-    popStyle();
+          noFill();
+          strokeWeight(3*leftHit);
+          stroke(255,0,0);
+          ellipse(leftEye.x, leftEye.y, 20, 20 );
+          
+          strokeWeight(3*leftHit);
+          stroke(255,0,0);
+          ellipse(rightEye.x, rightEye.y, 20, 20);
+          popStyle();
       }
-      
-      
     }
   }
   
