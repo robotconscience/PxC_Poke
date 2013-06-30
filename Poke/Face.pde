@@ -153,7 +153,7 @@ class Face {
           stroke(255,0,0);
           ellipse(leftEye.x, leftEye.y, 20, 20 );
           
-          strokeWeight(3*leftHit);
+          strokeWeight(3*rightHit);
           stroke(255,0,0);
           ellipse(rightEye.x, rightEye.y, 20, 20);
           popStyle();
