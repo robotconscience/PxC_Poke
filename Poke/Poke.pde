@@ -60,7 +60,7 @@ void setup() {
   // publishers: pxc stuff
   sb.addPublish( "eyes", "eyes", eyeJSON );
   sb.addPublish( "finger", "point", fingerJSON );
-  sb.addPublish( "poke", "string", "" );
+  sb.addPublish( "poke", "range", 0 );
 
   // publishers: game logic
   sb.addPublish( "playerReady", "string", "" );
@@ -118,6 +118,7 @@ void draw() {
     session.ReleaseFrame();
   }
   
+
   // render!
   
   pushMatrix();
@@ -189,19 +190,25 @@ void onCustomMessage( String name, String type, String value ) {
 ********************************************/
 
 void poke( PVector finger ){
+  
+  println("POKING");
   int test = theirFace.checkHit(finger.x, finger.y);
   println(test);
   switch ( test ){
     case 1:
       // left eye hit!
-      sb.send( "poke", name + ":" + 0 );
+      sb.send( "poke", 0 );
       break;
     case 2:
       // right eye hit!
-      sb.send( "poke", name + ":" + 1 );
+      sb.send( "poke", 1 );
       break;
     default:
-      // crickets
+      println("missed");
+      myFace.miss.x = finger.x;
+      myFace.miss.y = finger.y;
+      break;
+      
   }
 }
 
