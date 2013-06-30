@@ -166,7 +166,7 @@ void draw() {
   
   if ( bGameStarted || mousePressed ){
     pushMatrix();
-    translate(0,0,-1000);
+    translate(0,0,-500);
     theirFace.drawEnemy(255);
     popMatrix();
   }
@@ -217,7 +217,7 @@ void onRangeMessage( String name, int value ){
     if ( value < 2 ) bHit = true;
     println("GOT POKE! "+value);
     myFace.onPoke( value );
-    theirFace.finger.z = 1000;
+    theirFace.finger.z = 1200;
   }
 }
 
