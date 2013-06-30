@@ -33,8 +33,10 @@ float scaleY = 768.0 / 240.0;
 boolean bGameStarted = false;
 boolean bGameEnded   = false;
 int     gameStartedAt = 0;
-
 int     lastSent     = 0;
+
+int opponentHitL;
+int opponentHitR;
 
 // layout stuff
 PFont   font;
@@ -44,6 +46,9 @@ void setup() {
   size(1024, 768, P3D);
   smooth();
   
+  opponentHitL = 0;
+  opponentHitR = 0;
+
   myFace = new Face(this);
   theirFace = new Face(this);
   
@@ -215,6 +220,7 @@ void onCustomMessage( String name, String type, String value ) {
 
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
+
   println(test);
   if ( mousePressed) test = 1;
   switch ( test ){
