@@ -89,6 +89,8 @@ class Face {
   
   void drawEnemy( float alpha ){
     fill(255);
+//    image(hit, 0, 0);
+    
     drawFace( alpha, false);
     
     if (miss.x != 0)
@@ -108,13 +110,16 @@ class Face {
 //      fill( 255, alpha );
 //      ellipse( finger.x, finger.y, 20, 20 );
       pushMatrix();
-      translate( finger.x, finger.y + 60, finger.z - 200);
+      translate( finger.x, finger.y + 60, finger.z - 198);
       rotateX(radians(90));
       rotateZ(radians(90));
-      lights();  
+      fill(150);
+      noStroke();
       model.draw();
       popMatrix();
     }
+    
+    finger.z *= .8;
     
     updateValidStuff();
   }
@@ -125,7 +130,8 @@ class Face {
         noFill();
         stroke( 150, alpha );
       } else {
-        fill( 150, alpha );
+        fill( 150, 100 );
+        stroke( 150, alpha );
       }      
       float centerX = (rightEye.x + leftEye.x)/ 2.0;
       float centerY = (rightEye.y + leftEye.y)/ 2.0;
@@ -133,17 +139,28 @@ class Face {
       float w = (leftEye.x - rightEye.x) * 1.5;
       float h = w * 1.7;
       
+      strokeWeight( 2 );
+      
       ellipse( centerX, centerY, w, h );
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       ellipse(rightEye.x, rightEye.y, 20, 20 );
       pushStyle();
       noFill();
       strokeWeight(3*leftHit);
-      stroke(255,0,0);
+      
+      float r = map( leftHit, 0, 5, 150, 255);
+      float g = map( leftHit, 0, 5, 150, 0);
+      float b = map( leftHit, 0, 5, 150, 0);
+      
+      stroke(r,g,b, alpha);
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       
       strokeWeight(3*rightHit);
-      stroke(255,0,0);
+      r = map( leftHit, 0, 5, 150, 255);
+      g = map( leftHit, 0, 5, 150, 0);
+      b = map( leftHit, 0, 5, 150, 0);
+      
+      stroke(r,g,b, alpha);
       ellipse(rightEye.x, rightEye.y, 20, 20);
       popStyle();
     }
@@ -169,7 +186,9 @@ class Face {
   }
   
   void updateFinger( float x, float y ){
-    finger.set(x * width,y * height);
+    
+    finger.x = finger.x * .9 + (x * width) * .1;
+    finger.y = finger.y * .9 + (y * height) * .1;
     
     bHasFinger = true;
     lastFinger = millis();

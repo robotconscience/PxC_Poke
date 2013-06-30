@@ -91,9 +91,11 @@ void setup() {
   lm = new Landmarks();
   
   // layout
-  fontBig = createFont("Verdana Bold", 50);
-  fontSmall = createFont("Verdana", 12);
+  fontBig = createFont("Franklin Gothic Medium", 50);
+  fontSmall = createFont("Franklin Gothic Medium", 20);
   textFont( fontBig );
+  
+  println(PFont.list());
 }
 
 void exit(){
@@ -123,6 +125,7 @@ void draw() {
   
   // render!
   noFill();
+  strokeWeight(.5);
   stroke(0,200,0);
   pushMatrix();
   translate(width/2, height/2, -500);
@@ -163,7 +166,7 @@ void draw() {
   
   pushMatrix();
   translate(0,0,100);
-  myFace.drawMe(255);
+  myFace.drawMe(100);
   popMatrix();
   noLights();
   
@@ -173,25 +176,26 @@ void draw() {
   pushMatrix();
   fill(150,0,150);
   translate( width - 120, 20 );
-  rect( 0,0, 100, 20 );
+  rect( 0,0, 100, 30 );
   fill(255);
-  str = "** SCORE **";
-  text( str, 10, 15 );
+  str = "SCORE";
+  text( str, 10, 20 );
   
-  translate( 0, 20 );
+  translate( 0, 30 );
   
   fill(150,255,0);
-  rect( 0,0, 100, 20 );
+  rect( 0,0, 100, 30 );
   str = "YOU: "+(theirFace.leftHit + theirFace.rightHit);
   fill(255);
-  text( str, 10, 15 );
+  text( str, 10, 20 );
   
-  translate( 0, 20 );
+  translate( 0, 30 );
+  
   fill(0,255,150);
-  rect( 0, 0, 100, 20 );
+  rect( 0, 0, 100, 30 );
   fill( 255);
   str = "THEM: "+(myFace.leftHit + myFace.rightHit);
-  text( str, 10, 15 );
+  text( str, 10, 20 );
   popMatrix();
 }
 
@@ -199,6 +203,7 @@ void onRangeMessage( String name, int value ){
   if (name.equals("poke")){
     println("GOT POKE!");
     myFace.onPoke( value );
+    theirFace.finger.z = 1000;
   }
 }
 
@@ -260,6 +265,7 @@ void poke( PVector finger ){
       sb.send( "poke", name + ":1" );
       break;
     default:
+      sb.send( "poke", name + ":2" );
       break;
   }
 }

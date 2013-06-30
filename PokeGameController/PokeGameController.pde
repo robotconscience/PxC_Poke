@@ -42,7 +42,7 @@ void onStringMessage( String name, String value ){
   if ( name.equals("playerReady") ){
     Player player = new Player();
     player.index = value.indexOf("1") > 0 ? 1 : 2;
-    println("Name: "+value+", index: "+ player.index);
+    //println("Name: "+value+", index: "+ player.index);
     
     playerMap.put( value, player );
     if ( playerMap.size() > 1 ){
@@ -78,11 +78,11 @@ void onStringMessage( String name, String value ){
             p.hitCountRight++;
           }
           if ( p.index == 1 ){
-            println("poked player 1");
-            sb.send("pokePlayer1", pokeType );
-          } else {
             println("poked player 2");
             sb.send("pokePlayer2", pokeType );
+          } else {
+            println("poked player 1");
+            sb.send("pokePlayer1", pokeType );
           }
           break;
         }
