@@ -194,7 +194,7 @@ void draw() {
   rect( 0,0, 100, 30 );
   str = "YOU";
   fill(255,0,0);
-  float val = max(0, map( (theirFace.leftHit + theirFace.rightHit), 0, 5, 96, 0 ));
+  float val = max(0, map( (myFace.leftHit + myFace.rightHit), 0, 10, 96, 0 ));
   rect( 2,2, val, 26);
   fill(255);
   text( str, 10, 20 );
@@ -205,7 +205,7 @@ void draw() {
   rect( 0, 0, 100, 30 );
   str = "THEM";
   fill(255,0,0);
-  val = max(0, map( (myFace.leftHit + myFace.rightHit), 0, 5, 96, 0 ));
+  val = max(0, map( (theirFace.leftHit + theirFace.rightHit), 0, 10, 96, 0 ));
   rect( 2,2, val, 26);
   fill( 255);
   text( str, 10, 20 );
