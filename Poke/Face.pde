@@ -5,6 +5,14 @@ class Face {
   PVector rightEye   = new PVector(-1,-1);
   PVector finger     = new PVector(-1,-1);
   
+  OBJModel model;
+  
+  boolean bHasFinger = false;
+  boolean bHasFace = false;
+  
+  int lastFinger = 0;
+  int lastFace = 0;
+  
   PImage  image;
   PGraphics hit;
   
@@ -13,10 +21,16 @@ class Face {
   int rightHit  = 0;
   
   // hit threshold aka eye radius
-  float hitThresh = 40;
+  float hitThresh = 50;
 
-  Face(){
-    image = loadImage( "horrifying.png" );
+  Face( PApplet parent ){
+    model = new OBJModel(parent, "finger.obj", "absolute", TRIANGLES);
+    model.enableDebug();
+
+    model.scale(10);
+    model.translateToCenter();
+    
+    
     hit = createGraphics(1024,768);
     hit.clear();
   }
@@ -43,25 +57,40 @@ class Face {
   void drawMe( float alpha ){
     noStroke();
     
-    //tint(255, alpha);
-    float centerX = (rightEye.x + leftEye.x)/ 2.0;
-    float centerY = (rightEye.y + leftEye.y)/ 2.0;
-    float scale = (float) abs(rightEye.x - leftEye.x) / image.width;
+    if ( bHasFace ){
+      fill( 0, alpha );
+        
+      float centerX = (rightEye.x + leftEye.x)/ 2.0;
+      float centerY = (rightEye.y + leftEye.y)/ 2.0;
+      
+      float w = (leftEye.x - rightEye.x) * 1.5;
+      float h = w * 1.7;
+      
+      ellipse( centerX, centerY, w, h );
+      ellipse(leftEye.x, leftEye.y, 20, 20 );
+      ellipse(rightEye.x, rightEye.y, 20, 20 );
+    }
     
-    //image( image, centerX - image.width/ 2.0, centerY, image.width * scale, image.height * scale);
-    
-    //fill( 255, alpha );
-    ellipse(leftEye.x, leftEye.y, 20, 20 );
-    ellipse(rightEye.x, rightEye.y, 20, 20 );
-    
-    //ellipse( finger.x, finger.y, 20, 20 );
-    pushMatrix();
-    translate( finger.x, finger.y, finger.z);
-    lights();  
-    box(20,20,500);
-    popMatrix();
-    
-    finger.z *= .8;
+    if ( bHasFinger ){
+      
+      //ellipse( finger.x, finger.y, 20, 20 );
+      fill(255);
+      pushMatrix();
+      translate( finger.x, finger.y + 60, finger.z + 200);
+      rotateX(radians(90));
+      rotateZ(radians(270));
+//      rotateY(radians(180));
+      lights();  
+      model.draw();
+      //box(20,20,500);
+      popMatrix();
+      
+//      ellipse( finger.x, finger.y, 20, 20 );
+      
+      finger.z *= .8;
+    }
+
+    updateValidStuff();
   }
   
   void drawEnemy( float alpha ){
@@ -93,23 +122,54 @@ class Face {
     }
     fill(255);
     if ( finger.x >= 0){
-      fill( 255, alpha );
-      ellipse( finger.x, finger.y, 20, 20 );
+//      fill( 255, alpha );
+//      ellipse( finger.x, finger.y, 20, 20 );
+      pushMatrix();
+      translate( finger.x, finger.y, finger.z);
+      rotateX(radians(90));
+      rotateZ(radians(90));
+//      rotateY(radians(180));
+      lights();  
+      model.draw();
+      //box(20,20,500);
+      popMatrix();
+    }
+    
+    updateValidStuff();
+  }
+  
+  void updateValidStuff(){
+    // check how long it's been since you saw a finger/face
+    if ( millis() - lastFinger > 2000 ){
+      bHasFinger = false;
+    }
+    
+    if ( millis() - lastFace > 2000 ){
+      bHasFace = false;
     }
   }
   
   void updateEyes( float leftX, float leftY, float rightX, float rightY ){
     leftEye.set(leftX * width, leftY * height, 0);
     rightEye.set(rightX * width, rightY * height, 0);
+    
+    bHasFace = true;
+    lastFace = millis();
   }
   
   void updateFinger( float x, float y ){
     finger.set(x * width,y * height);
+    
+    bHasFinger = true;
+    lastFinger = millis();
   }
   
   void updateFinger( float x, float y, float z ){
     finger.x = finger.x * .9 + (x * width) * .1;
     finger.y = finger.y * .9 + (y * height) * .1;
+    
+    bHasFinger = true;
+    lastFinger = millis();
   }
   
   void onPoke( int state ){

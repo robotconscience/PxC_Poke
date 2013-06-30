@@ -63,6 +63,7 @@ void onStringMessage( String name, String value ){
 //        System.out.println(pairs.getKey() + " = " + pairs.getValue());
         // should only be 2 players, so return once we find
         //  the other one
+        println( pairs.getKey() );
         if ( !pairs.getKey().equals(pokeSource) ){
           Player p = (Player) pairs.getValue();
           if ( pokeType == 0 ){
@@ -71,8 +72,10 @@ void onStringMessage( String name, String value ){
             p.hitCountRight++;
           }
           if ( p.index == 1 ){
+            println("poked player 1");
             sb.send("pokePlayer1", pokeType );
           } else {
+            println("poked player 2");
             sb.send("pokePlayer2", pokeType );
           }
           break;

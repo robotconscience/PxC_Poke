@@ -1,6 +1,7 @@
 import spacebrew.*;
 import intel.pcsdk.*;
 import org.json.*;
+import saito.objloader.*;
 
 // finger + face tracking
 PXCUPipeline session;
@@ -35,13 +36,16 @@ int     gameStartedAt = 0;
 
 int     lastSent     = 0;
 
+// layout stuff
+PFont   font;
+
 void setup() {
   frameRate(60);
   size(1024, 768, P3D);
   smooth();
   
-  myFace = new Face();
-  theirFace = new Face();
+  myFace = new Face(this);
+  theirFace = new Face(this);
   
   // get to brewin'
   sb = new Spacebrew(this);
@@ -83,6 +87,10 @@ void setup() {
   
   hands = new Hands(); //requires PXCUPipeline session to init(PXCUPipeline.GESTURE)
   lm = new Landmarks();
+  
+  // layout
+  font = createFont("Helvetica", 50);
+  textFont( font );
 }
 
 void exit(){
@@ -100,7 +108,7 @@ void draw() {
     }
   }
   
-  background(0);
+  background(255);
   if ( session.AcquireFrame(true ) ){
     hands.update(session, false);
     lm.update(session, false);
@@ -125,9 +133,20 @@ void draw() {
   }
 
   if ( !bGameStarted ){
-    text("WAITING FOR OPPONENT!", width/2, height/2);
+    fill(0);
+    pushMatrix();
+    String str = "WAITING FOR OPPONENT!";
+    translate(width/2, height/2);
+    float sc = abs(sin(millis() * .001))*.5;
+    scale( 1.0 + sc,  1.0 + sc );
+    text(str, -textWidth(str)/2.0,0);
+    popMatrix();
   }
 
+}
+
+void onStringMessage ( String name, String value ){
+  println("got message "+name);
 }
 
 void onBooleanMessage( String name, boolean value ){
@@ -171,6 +190,7 @@ void onCustomMessage( String name, String type, String value ) {
 
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
+  println(test);
   switch ( test ){
     case 1:
       // left eye hit!
