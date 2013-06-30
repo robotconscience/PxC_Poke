@@ -4,6 +4,7 @@ class Face {
   PVector leftEye   = new PVector(-1,-1);
   PVector rightEye   = new PVector(-1,-1);
   PVector finger     = new PVector(-1,-1);
+  PVector miss = new Pvector(-1,-1);
   
   PImage  image;
   PGraphics hit;
