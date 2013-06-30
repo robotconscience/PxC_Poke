@@ -145,7 +145,7 @@ class Face {
       ellipse(rightEye.x, rightEye.y, 20, 20 );
       
       
-      if (!myFace)
+      if (true)
       {
           pushStyle();
           noFill();
