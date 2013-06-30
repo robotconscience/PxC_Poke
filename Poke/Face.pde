@@ -30,7 +30,8 @@ class Face {
 
     model.scale(10);
     model.translateToCenter();
-    
+    model.disableMaterial();
+    model.disableTexture();
     
     hit = createGraphics(1024,768);
     hit.clear();
@@ -42,10 +43,7 @@ class Face {
   int checkHit( float x, float y ){
     PVector check = new PVector(x, y);
     miss.set(x,y);
-//    hit.beginDraw();
-//    fill(255,0,0);
-//    ellipse(x,y,20,20);
-//    hit.endDraw();
+    
     if ( check.dist(leftEye) < hitThresh ){
       leftHit++;
       return 1;
@@ -70,7 +68,8 @@ class Face {
       rotateX(radians(90));
       rotateZ(radians(270));
 //      rotateY(radians(180));
-      lights();  
+      noFill();
+      stroke(0, 50);
       model.draw();
       //box(20,20,500);
       popMatrix();
@@ -143,7 +142,6 @@ class Face {
       ellipse( centerX, centerY, w, h );
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       ellipse(rightEye.x, rightEye.y, 20, 20 );
-      
       
       if (!myFace)
       {

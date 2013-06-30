@@ -39,7 +39,7 @@ int opponentHitL;
 int opponentHitR;
 
 // layout stuff
-PFont   font;
+PFont   fontBig, fontSmall;
 
 void setup() {
   frameRate(60);
@@ -94,8 +94,9 @@ void setup() {
   lm = new Landmarks();
   
   // layout
-  font = createFont("Helvetica", 50);
-  textFont( font );
+  fontBig = createFont("Verdana Bold", 50);
+  fontSmall = createFont("Verdana", 12);
+  textFont( fontBig );
 }
 
 void exit(){
@@ -137,6 +138,7 @@ void draw() {
   translate(width/2, height/2);
   float sc = abs(sin(millis() * .001))*.5;
   scale( 1.0 + sc,  1.0 + sc );
+  textFont( fontBig );
   
   if ( !bGameStarted && !bGameEnded ){
     str = "WAITING FOR OPPONENT!";
@@ -164,13 +166,23 @@ void draw() {
   
   pushMatrix();
   translate(0,0,100);
-  myFace.drawMe(50);
+  myFace.drawMe(255);
   popMatrix();
+  noLights();
   
+  textFont( fontSmall );
+  noStroke();
+  fill(150,0,150);
+  rect( width - 120, 20, 100, 60 );
+  fill(255);
+  str = "*** SCORE ***\nYOU: "+(theirFace.leftHit + theirFace.rightHit);
+  str += "\nTHEM: "+(myFace.leftHit + myFace.rightHit);
+  text( str, width - 100, 42 );
 }
 
 void onRangeMessage( String name, int value ){
   if (name.equals("poke")){
+    println("GOT POKE!");
     myFace.onPoke( value );
   }
 }
@@ -264,7 +276,13 @@ void updateFingers(){
         myFace.updateFinger( (float) (320.0f - hands.secondaryHand[i].x) / 320.f, (float) hands.secondaryHand[i].y / 240.f );
         //ellipse(width - hands.secondaryHand[i].x * 2.0, hands.secondaryHand[i].y * 2.0, hands.secondaryHand[i].z, hands.secondaryHand[i].z);
         if ( hands.secondaryHand[i].z > pokeThreshold ){
-          background(255,0,0);
+          if ( !bPoking ){
+            bPoking = true;
+            poke( myFace.finger );
+            myFace.finger.z -= 1000;
+          }
+        } else {
+          bPoking = false;
         }
         
         // send raw finger
