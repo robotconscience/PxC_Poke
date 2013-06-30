@@ -13,9 +13,6 @@ Face myFace, theirFace;
 boolean bPoking = false;
 int pokeThreshold = 75;
 
-float missedX = 0;
-float missedY = 0;
-
 // Spacebrew
 Spacebrew sb;
 String server="10.200.82.197";
@@ -174,6 +171,8 @@ void onCustomMessage( String name, String type, String value ) {
 ********************************************/
 
 void poke( PVector finger ){
+  
+  println("POKING");
   int test = theirFace.checkHit(finger.x, finger.y);
   switch ( test ){
     case 1:
@@ -185,8 +184,9 @@ void poke( PVector finger ){
       sb.send( "poke", 1 );
       break;
     default:
-      missedX = finger.x;
-      missedY = finger.y;
+      println("missed");
+      myFace.miss.x = finger.x;
+      myFace.miss.y = finger.y;
       break;
       
   }

@@ -4,7 +4,7 @@ class Face {
   PVector leftEye   = new PVector(-1,-1);
   PVector rightEye   = new PVector(-1,-1);
   PVector finger     = new PVector(-1,-1);
-  PVector miss = new Pvector(-1,-1);
+  PVector miss = new PVector(-1,-1);
   
   PImage  image;
   PGraphics hit;
@@ -61,6 +61,17 @@ class Face {
     lights();  
     box(20,20,500);
     popMatrix();
+    
+    if (miss.x != 0)
+    {
+      pushMatrix();
+      translate(miss.x, miss.y);
+      
+      stroke(255);
+      line(-10,-10,10,10);
+      line(-10,10,10,-10);
+      popMatrix();
+    }
     
     finger.z *= .8;
   }
