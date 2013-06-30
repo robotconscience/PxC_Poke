@@ -4,6 +4,7 @@ class Face {
   PVector leftEye   = new PVector(-1,-1);
   PVector rightEye   = new PVector(-1,-1);
   PVector finger     = new PVector(-1,-1);
+  PVector miss = new PVector(-1,-1);
   
   OBJModel model;
   
@@ -57,35 +58,7 @@ class Face {
   void drawMe( float alpha ){
     noStroke();
     
-<<<<<<< HEAD
     drawFace( alpha );
-=======
-    if ( bHasFace ){
-      fill( 0, alpha );
-        
-      float centerX = (rightEye.x + leftEye.x)/ 2.0;
-      float centerY = (rightEye.y + leftEye.y)/ 2.0;
-      
-      float w = (leftEye.x - rightEye.x) * 1.5;
-      float h = w * 1.7;
-      
-      ellipse( centerX, centerY, w, h );
-      ellipse(leftEye.x, leftEye.y, 20, 20 );
-      ellipse(rightEye.x, rightEye.y, 20, 20 );
-    }
-    
-
-    if (miss.x != 0)
-    {
-      pushMatrix();
-      translate(miss.x, miss.y);
-      
-      stroke(255,0,0);
-      line(-10,-10,10,10);
-      line(-10,10,10,-10);
-      popMatrix();
-    }
->>>>>>> 6bd416002af68673d4b75416a43b87971367ee55
     
     if ( bHasFinger ){
       
@@ -112,6 +85,17 @@ class Face {
   void drawEnemy( float alpha ){
     fill(255);
     drawFace( alpha );
+    
+    if (miss.x != 0)
+    {
+      pushMatrix();
+      translate(miss.x, miss.y);
+      
+      stroke(255,0,0);
+      line(-10,-10,10,10);
+      line(-10,10,10,-10);
+      popMatrix();
+    }
     
     fill(255);
     if ( finger.x >= 0){
