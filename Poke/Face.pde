@@ -78,7 +78,7 @@ class Face {
       pushMatrix();
       translate(miss.x, miss.y);
       
-      stroke(255);
+      stroke(255,0,0);
       line(-10,-10,10,10);
       line(-10,10,10,-10);
       popMatrix();
