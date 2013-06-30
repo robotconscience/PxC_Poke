@@ -59,7 +59,11 @@ class Face {
   void drawMe( float alpha ){
     noStroke();
     
+    pushMatrix();
+    translate(width,0);
+    scale(-1,1);
     drawFace( alpha, true);
+    popMatrix();
     
     if ( bHasFinger ){
       
@@ -71,15 +75,17 @@ class Face {
       rotateZ(radians(270));
 //      rotateY(radians(180));
       noFill();
+      strokeWeight(2);
       stroke(0, 50);
       model.draw();
       //box(20,20,500);
       popMatrix();
       
+      pushStyle();
+      strokeWeight(2.0);
       stroke( abs( sin( millis() * .01)) * 255, 0, 0 );
       dottedLine( finger.x, finger.y, finger.z, finger.x, finger.y, finger.z - 1000);
-      
-//      ellipse( finger.x, finger.y, 20, 20 );
+      popStyle();
       
       finger.z *= .8;
     }
@@ -137,16 +143,26 @@ class Face {
       float centerY = (rightEye.y + leftEye.y)/ 2.0;
       
       float w = (leftEye.x - rightEye.x) * 1.5;
-      float h = w * 1.7;
+      float h = w * 1.5;
       
-      strokeWeight( 2 );
+      if ( !myFace ){
+        pushStyle();
+        pushMatrix();
+        strokeWeight(.5);
+        translate( centerX, centerY );
+        scale(w,h);
+        sphere( 1 );
+        popMatrix();
+      } else {
+        pushStyle();
+        pushMatrix();
+        strokeWeight(2);
+        ellipse( centerX, centerY, w, h );
+        popMatrix();
+      }
       
-      ellipse( centerX, centerY, w, h );
-      ellipse(leftEye.x, leftEye.y, 20, 20 );
-      ellipse(rightEye.x, rightEye.y, 20, 20 );
-      pushStyle();
       noFill();
-      strokeWeight(3*leftHit);
+      strokeWeight(3*(leftHit+1));
       
       float r = map( leftHit, 0, 5, 150, 255);
       float g = map( leftHit, 0, 5, 150, 0);
@@ -155,7 +171,7 @@ class Face {
       stroke(r,g,b, alpha);
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       
-      strokeWeight(3*rightHit);
+      strokeWeight(3*(rightHit+1));
       r = map( leftHit, 0, 5, 150, 255);
       g = map( leftHit, 0, 5, 150, 0);
       b = map( leftHit, 0, 5, 150, 0);
