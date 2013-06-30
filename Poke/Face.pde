@@ -77,7 +77,7 @@ class Face {
       popMatrix();
       
       stroke( abs( sin( millis() * .01)) * 255, 0, 0 );
-      line( finger.x, finger.y, finger.z, finger.x, finger.y, finger.z - 1000);
+      dottedLine( finger.x, finger.y, finger.z, finger.x, finger.y, finger.z - 1000);
       
 //      ellipse( finger.x, finger.y, 20, 20 );
       
@@ -207,6 +207,22 @@ class Face {
       leftHit++;
     } else if ( state == 1){
       rightHit++;
+    }
+  }
+  
+  void dottedLine( float x1, float y1, float z1, float x2, float y2, float z2 ){
+    boolean bDraw = false;
+    for (float i=0; i<1.0; i+= .1){
+      if ( bDraw ){
+        float xf = lerp(x1, x2, i - .1);
+        float xt = lerp(x1, x2, i);
+        float yf = lerp(y1, y2, i - .1);
+        float yt = lerp(y1, y2, i);
+        float zf = lerp(z1, z2, i - .1);
+        float zt = lerp(z1, z2, i);
+        line( xf, yf, zf, xt, yt, zt );
+      }
+      bDraw = !bDraw;
     }
   }
 }

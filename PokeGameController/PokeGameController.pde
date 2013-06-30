@@ -11,6 +11,8 @@ Spacebrew sb;
 // map of players to hits
 HashMap<String,Player> playerMap = new HashMap<String,Player>();
 
+int playerCount = 0;
+
 void setup() {
     size(200, 200);
     // instantiate the sb variable
@@ -21,6 +23,7 @@ void setup() {
     sb.addPublish( "endGame", "boolean", false ); 
     sb.addPublish( "pokePlayer1", "range", 0 );
     sb.addPublish( "pokePlayer2", "range", 0 );
+    sb.addPublish( "gameMessage", "string", "");
 
     // add each thing you subscribe to
     sb.addSubscribe( "playerReady", "string" );
@@ -45,9 +48,10 @@ void onStringMessage( String name, String value ){
     //println("Name: "+value+", index: "+ player.index);
     
     playerMap.put( value, player );
-    if ( playerMap.size() > 1 ){
+    if ( playerMap.size() > 1 && playerCount != playerMap.size() ){
       sb.send("startGame", true );
     }
+    playerCount = playerMap.size();
   } else if ( name.equals("playerExit") ) {
     playerMap.remove( value );
     playerMap.clear();
@@ -69,7 +73,7 @@ void onStringMessage( String name, String value ){
 //        System.out.println(pairs.getKey() + " = " + pairs.getValue());
         // should only be 2 players, so return once we find
         //  the other one
-        println( pairs.getKey() );
+        String n = (String) pairs.getKey();
         if ( !pairs.getKey().equals(pokeSource) ){
           Player p = (Player) pairs.getValue();
           if ( pokeType == 0 ){
@@ -77,12 +81,21 @@ void onStringMessage( String name, String value ){
           } else if ( pokeType == 1 ){
             p.hitCountRight++;
           }
-          if ( p.index == 1 ){
-            println("poked player 2");
-            sb.send("pokePlayer2", pokeType );
+          
+          if ( p.hitCountLeft + p.hitCountRight >= 10 ){
+            sb.send("gameMessage", n);
+            sb.send("endGame", true );
+            
+            println("GAMMMMMEEEE OVERRRRR");
+            
           } else {
-            println("poked player 1");
-            sb.send("pokePlayer1", pokeType );
+            if ( p.index == 1 ){
+              println("poked player 2");
+              sb.send("pokePlayer2", pokeType );
+            } else {
+              println("poked player 1");
+              sb.send("pokePlayer1", pokeType );
+            }
           }
           break;
         }

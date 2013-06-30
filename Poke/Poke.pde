@@ -23,7 +23,6 @@ String description ="";
 // messages
 String eyeJSON = "";
 String fingerJSON = "";
-boolean bHit = false;
 
 // rendering helpers
 float scaleX = 1024.0 / 320.0;
@@ -32,6 +31,7 @@ float scaleY = 768.0 / 240.0;
 // rough game state stuff
 boolean bGameStarted = false;
 boolean bGameEnded   = false;
+String  gameMessage  = "";
 int     gameStartedAt = 0;
 int     lastSent     = 0;
 
@@ -39,12 +39,12 @@ int missOpacity = 255;
 
 // layout stuff
 PFont   fontBig, fontSmall;
+boolean bHit = false;
 
 void setup() {
   frameRate(60);
   size(1024, 768, P3D);
   smooth();
-  
 
   myFace = new Face(this);
   theirFace = new Face(this);
@@ -75,6 +75,7 @@ void setup() {
   
   // subscribers: game logic
   sb.addSubscribe( "startGame", "boolean" );
+  sb.addSubscribe( "gameMessage", "string" );
   sb.addSubscribe( "endGame", "boolean" );
 
   // connect!
@@ -113,7 +114,13 @@ void draw() {
     }
   }
   
-  background(255);
+  if ( bHit){
+    background(255,0,0);
+    bHit = false;
+  } else {
+    background(255);
+  }
+  
   if ( session.AcquireFrame(true ) ){
     hands.update(session, false);
     lm.update(session, false);
@@ -124,9 +131,9 @@ void draw() {
   }
   
   // render!
+  stroke(150);
+  strokeWeight(.75);
   noFill();
-  strokeWeight(.5);
-  stroke(0,200,0);
   pushMatrix();
   translate(width/2, height/2, -500);
   box(width, height, 1000);
@@ -150,7 +157,7 @@ void draw() {
     }
   } else if ( bGameEnded ){
     fill(255,0,0);
-    str = "GAME OVER, MAN";
+    str = gameMessage;
   }
   
   text(str, -textWidth(str)/2.0,0);
@@ -185,7 +192,10 @@ void draw() {
   
   fill(150,255,0);
   rect( 0,0, 100, 30 );
-  str = "YOU: "+(theirFace.leftHit + theirFace.rightHit);
+  str = "YOU";
+  fill(255,0,0);
+  float val = max(0, map( (theirFace.leftHit + theirFace.rightHit), 0, 5, 96, 0 ));
+  rect( 2,2, val, 26);
   fill(255);
   text( str, 10, 20 );
   
@@ -193,22 +203,32 @@ void draw() {
   
   fill(0,255,150);
   rect( 0, 0, 100, 30 );
+  str = "THEM";
+  fill(255,0,0);
+  val = max(0, map( (myFace.leftHit + myFace.rightHit), 0, 5, 96, 0 ));
+  rect( 2,2, val, 26);
   fill( 255);
-  str = "THEM: "+(myFace.leftHit + myFace.rightHit);
   text( str, 10, 20 );
   popMatrix();
 }
 
 void onRangeMessage( String name, int value ){
   if (name.equals("poke")){
-    println("GOT POKE!");
+    bHit = true;
+    println("GOT POKE! "+value);
     myFace.onPoke( value );
     theirFace.finger.z = 1000;
   }
 }
 
-void onStringMessage ( String name, String value ){
-  println("got message "+name);
+void onStringMessage ( String _name, String value ){
+  if (_name.equals("gameMessage")){
+    if ( value.equals(name)){
+      gameMessage = "YOU'RE A LOSER!";
+    } else {
+      gameMessage = "YOU'RE QUITE\nTHE POKER!!";
+    }
+  }
 }
 
 void onBooleanMessage( String name, boolean value ){
@@ -253,7 +273,6 @@ void onCustomMessage( String name, String type, String value ) {
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
 
-  println(test);
   if ( mousePressed) test = 1;
   switch ( test ){
     case 1:
