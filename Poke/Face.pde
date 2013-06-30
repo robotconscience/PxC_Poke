@@ -24,6 +24,8 @@ class Face {
   // hit threshold aka eye radius
   float hitThresh = 20;
 
+  int missOpacity = 0;
+  
   Face( PApplet parent ){
     model = new OBJModel(parent, "finger.obj", "absolute", TRIANGLES);
     model.enableDebug();
@@ -42,6 +44,8 @@ class Face {
   int checkHit( float x, float y ){
     PVector check = new PVector(x, y);
     miss.set(x,y);
+    missOpacity = 255;
+    
 //    hit.beginDraw();
 //    fill(255,0,0);
 //    ellipse(x,y,20,20);
@@ -82,16 +86,6 @@ class Face {
       
       finger.z *= .8;
     }
-    if (miss.x != 0)
-    {
-      pushMatrix();
-      translate(miss.x, miss.y);
-      
-      stroke(255,0,0);
-      line(-10,-10,10,10);
-      line(-10,10,10,-10);
-      popMatrix();
-    }
     
     updateValidStuff();
   }
@@ -102,9 +96,11 @@ class Face {
     
     if (miss.x != 0)
     {
+      if (missOpacity > 1) { missOpacity-=20;}
+      
       pushMatrix();
       translate(miss.x, miss.y);
-      stroke(255,0,0);
+      stroke(255,0,0,missOpacity);
       line(-10,-10,10,10);
       line(-10,10,10,-10);
       popMatrix();
@@ -143,8 +139,7 @@ class Face {
       ellipse( centerX, centerY, w, h );
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       ellipse(rightEye.x, rightEye.y, 20, 20 );
-      
-      
+ 
       if (true)
       {
           pushStyle();
