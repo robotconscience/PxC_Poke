@@ -59,7 +59,7 @@ class Face {
   void drawMe( float alpha ){
     noStroke();
     
-    drawFace( alpha );
+    drawFace( alpha, true);
     
     if ( bHasFinger ){
       
@@ -98,7 +98,7 @@ if (miss.x != 0)
   
   void drawEnemy( float alpha ){
     fill(255);
-    drawFace( alpha );
+    drawFace( alpha, false);
     
     if (miss.x != 0)
     {
@@ -123,10 +123,12 @@ if (miss.x != 0)
       popMatrix();
     }
     
+
+    
     updateValidStuff();
   }
   
-  void drawFace( float alpha ){
+  void drawFace( float alpha, boolean myFace) {
     if ( bHasFace ){
       fill( 150, alpha );
         
@@ -139,6 +141,23 @@ if (miss.x != 0)
       ellipse( centerX, centerY, w, h );
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       ellipse(rightEye.x, rightEye.y, 20, 20 );
+      
+      
+      if (!myFace)
+      {
+          pushStyle();
+    noFill();
+    strokeWeight(3*leftHit);
+    stroke(255,0,0);
+    ellipse(leftEye.x, leftEye.y, 20, 20 );
+    
+    strokeWeight(3*leftHit);
+    stroke(255,0,0);
+    ellipse(rightEye.x, rightEye.y, 20, 20);
+    popStyle();
+      }
+      
+      
     }
   }
   
