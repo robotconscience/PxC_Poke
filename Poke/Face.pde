@@ -145,21 +145,12 @@ class Face {
       float w = (leftEye.x - rightEye.x) * 1.5;
       float h = w * 1.5;
       
-      if ( !myFace ){
-        pushStyle();
-        pushMatrix();
-        strokeWeight(.5);
-        translate( centerX, centerY );
-        scale(w,h);
-        sphere( 1 );
-        popMatrix();
-      } else {
-        pushStyle();
-        pushMatrix();
-        strokeWeight(2);
-        ellipse( centerX, centerY, w, h );
-        popMatrix();
-      }
+      pushStyle();
+      pushMatrix();
+      strokeWeight(2);
+      ellipse( centerX, centerY, w, h );
+      popMatrix();
+    
       
       noFill();
       strokeWeight(3*(leftHit+1));

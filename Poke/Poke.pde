@@ -214,7 +214,7 @@ void draw() {
 
 void onRangeMessage( String name, int value ){
   if (name.equals("poke")){
-    bHit = true;
+    if ( value < 2 ) bHit = true;
     println("GOT POKE! "+value);
     myFace.onPoke( value );
     theirFace.finger.z = 1000;
