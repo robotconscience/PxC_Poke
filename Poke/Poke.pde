@@ -143,7 +143,7 @@ void draw() {
   
   if ( bGameStarted ){
     pushMatrix();
-    //translate(0,0,-1000);
+    translate(0,0,-500);
     theirFace.drawEnemy(255);
     popMatrix();
   }
@@ -228,7 +228,7 @@ void updateFingers(){
           if ( !bPoking ){
             bPoking = true;
             poke( myFace.finger );
-            myFace.finger.z -= 2000;
+            myFace.finger.z -= 1000;
           }
         } else {
           bPoking = false;

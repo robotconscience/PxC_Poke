@@ -108,6 +108,8 @@ class Face {
       lights();  
       model.draw();
       popMatrix();
+      
+      ellipse( finger.x, finger.y, 20, 20 );
     }
     
     updateValidStuff();
@@ -124,6 +126,7 @@ class Face {
       float h = w * 1.7;
       
       ellipse( centerX, centerY, w, h );
+      fill(255,0,0, alpha);
       ellipse(leftEye.x, leftEye.y, 20, 20 );
       ellipse(rightEye.x, rightEye.y, 20, 20 );
     }
