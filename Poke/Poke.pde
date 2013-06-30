@@ -33,8 +33,10 @@ float scaleY = 768.0 / 240.0;
 boolean bGameStarted = false;
 boolean bGameEnded   = false;
 int     gameStartedAt = 0;
-
 int     lastSent     = 0;
+
+int opponentHitL;
+int opponentHitR;
 
 // layout stuff
 PFont   font;
@@ -44,6 +46,9 @@ void setup() {
   size(1024, 768, P3D);
   smooth();
   
+  opponentHitL = 0;
+  opponentHitR = 0;
+
   myFace = new Face(this);
   theirFace = new Face(this);
   
@@ -200,15 +205,19 @@ void onCustomMessage( String name, String type, String value ) {
 
 void poke( PVector finger ){
   int test = theirFace.checkHit(finger.x, finger.y);
-  println(test);
+  //ntln(test);
   switch ( test ){
     case 1:
       // left eye hit!
       sb.send( "poke", name + ":" + 0 );
+      println("hit left");
+      println(opponentHitL);
+      opponentHitL++;
       break;
     case 2:
       // right eye hit!
       sb.send( "poke", name + ":" + 1 );
+      opponentHitR++;
       break;
     default:
       // crickets
