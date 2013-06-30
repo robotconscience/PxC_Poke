@@ -57,19 +57,7 @@ class Face {
   void drawMe( float alpha ){
     noStroke();
     
-    if ( bHasFace ){
-      fill( 0, alpha );
-        
-      float centerX = (rightEye.x + leftEye.x)/ 2.0;
-      float centerY = (rightEye.y + leftEye.y)/ 2.0;
-      
-      float w = (leftEye.x - rightEye.x) * 1.5;
-      float h = w * 1.7;
-      
-      ellipse( centerX, centerY, w, h );
-      ellipse(leftEye.x, leftEye.y, 20, 20 );
-      ellipse(rightEye.x, rightEye.y, 20, 20 );
-    }
+    drawFace( alpha );
     
     if ( bHasFinger ){
       
@@ -95,31 +83,8 @@ class Face {
   
   void drawEnemy( float alpha ){
     fill(255);
-    noStroke();
-    pushMatrix();
-    translate(0,0,-200);
-    image(hit,0,0);
-    popMatrix();
+    drawFace( alpha );
     
-    stroke(255, alpha);
-    float centerX = (rightEye.x + leftEye.x)/ 2.0;
-    float centerY = (rightEye.y + leftEye.y)/ 2.0;
-    float scale = (float) abs(leftEye.x - rightEye.x) / image.width;
-    
-    pushMatrix();
-    translate(centerX, centerY, -200);
-    scale(1,1.8);
-    sphere(100);
-    popMatrix();
-    
-    stroke(255,0,0);
-    if ( leftEye.x >= 0 ){
-      line(leftEye.x-10, leftEye.y-10,leftEye.x+10, leftEye.y+10);
-      line(leftEye.x+10, leftEye.y-10,leftEye.x-10, leftEye.y+10);
-      
-      line(rightEye.x-10, rightEye.y-10,rightEye.x+10, rightEye.y+10);
-      line(rightEye.x+10, rightEye.y-10,rightEye.x-10, rightEye.y+10);
-    }
     fill(255);
     if ( finger.x >= 0){
 //      fill( 255, alpha );
@@ -128,14 +93,28 @@ class Face {
       translate( finger.x, finger.y, finger.z);
       rotateX(radians(90));
       rotateZ(radians(90));
-//      rotateY(radians(180));
       lights();  
       model.draw();
-      //box(20,20,500);
       popMatrix();
     }
     
     updateValidStuff();
+  }
+  
+  void drawFace( float alpha ){
+    if ( bHasFace ){
+      fill( 0, alpha );
+        
+      float centerX = (rightEye.x + leftEye.x)/ 2.0;
+      float centerY = (rightEye.y + leftEye.y)/ 2.0;
+      
+      float w = (leftEye.x - rightEye.x) * 1.5;
+      float h = w * 1.7;
+      
+      ellipse( centerX, centerY, w, h );
+      ellipse(leftEye.x, leftEye.y, 20, 20 );
+      ellipse(rightEye.x, rightEye.y, 20, 20 );
+    }
   }
   
   void updateValidStuff(){
