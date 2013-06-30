@@ -123,7 +123,7 @@ void draw() {
   
   // render!
   noFill();
-  stroke(200);
+  stroke(0,200,0);
   pushMatrix();
   translate(width/2, height/2, -500);
   box(width, height, 1000);
@@ -169,12 +169,30 @@ void draw() {
   
   textFont( fontSmall );
   noStroke();
+  
+  pushMatrix();
   fill(150,0,150);
-  rect( width - 120, 20, 100, 60 );
+  translate( width - 120, 20 );
+  rect( 0,0, 100, 20 );
   fill(255);
-  str = "*** SCORE ***\nYOU: "+(theirFace.leftHit + theirFace.rightHit);
-  str += "\nTHEM: "+(myFace.leftHit + myFace.rightHit);
-  text( str, width - 100, 42 );
+  str = "** SCORE **";
+  text( str, 10, 15 );
+  
+  translate( 0, 20 );
+  
+  fill(150,255,0);
+  rect( 0,0, 100, 20 );
+  str = "YOU: "+(theirFace.leftHit + theirFace.rightHit);
+  fill(255);
+  text( str, 10, 15 );
+  
+  translate( 0, 20 );
+  fill(0,255,150);
+  rect( 0, 0, 100, 20 );
+  fill( 255);
+  str = "THEM: "+(myFace.leftHit + myFace.rightHit);
+  text( str, 10, 15 );
+  popMatrix();
 }
 
 void onRangeMessage( String name, int value ){

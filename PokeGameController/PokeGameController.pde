@@ -50,8 +50,9 @@ void onStringMessage( String name, String value ){
     }
   } else if ( name.equals("playerExit") ) {
     playerMap.remove( value );
+    playerMap.clear();
     sb.send("endGame", true );
-    println(playerMap.size());
+    
   } else if ( name.equals("poke" ) ){
     // sending val as name:poke (poke = 0: left, 1:right)
     String[] vals = value.split(":");

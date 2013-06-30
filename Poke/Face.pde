@@ -76,7 +76,7 @@ class Face {
       //box(20,20,500);
       popMatrix();
       
-      stroke(0);
+      stroke( abs( sin( millis() * .01)) * 255, 0, 0 );
       line( finger.x, finger.y, finger.z, finger.x, finger.y, finger.z - 1000);
       
 //      ellipse( finger.x, finger.y, 20, 20 );
