@@ -4,7 +4,6 @@ class Face {
   PVector leftEye   = new PVector(-1,-1);
   PVector rightEye   = new PVector(-1,-1);
   PVector finger     = new PVector(-1,-1);
-  PVector miss = new PVector(-1,-1);
   
   OBJModel model;
   
@@ -60,19 +59,6 @@ class Face {
     
     drawFace( alpha );
     
-
-    if (miss.x != 0)
-    {
-      pushMatrix();
-      translate(miss.x, miss.y);
-      
-      stroke(255);
-      line(-10,-10,10,10);
-      line(-10,10,10,-10);
-      popMatrix();
-    }
-    
-
     if ( bHasFinger ){
       
       //ellipse( finger.x, finger.y, 20, 20 );
@@ -104,7 +90,7 @@ class Face {
 //      fill( 255, alpha );
 //      ellipse( finger.x, finger.y, 20, 20 );
       pushMatrix();
-      translate( finger.x, finger.y, finger.z);
+      translate( finger.x, finger.y + 60, finger.z - 200);
       rotateX(radians(90));
       rotateZ(radians(90));
       lights();  
@@ -117,7 +103,7 @@ class Face {
   
   void drawFace( float alpha ){
     if ( bHasFace ){
-      fill( 0, alpha );
+      fill( 150, alpha );
         
       float centerX = (rightEye.x + leftEye.x)/ 2.0;
       float centerY = (rightEye.y + leftEye.y)/ 2.0;
