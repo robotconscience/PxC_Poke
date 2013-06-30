@@ -22,7 +22,7 @@ class Face {
   int rightHit  = 0;
   
   // hit threshold aka eye radius
-  float hitThresh = 50;
+  float hitThresh = 20;
 
   Face( PApplet parent ){
     model = new OBJModel(parent, "finger.obj", "absolute", TRIANGLES);
@@ -73,6 +73,9 @@ class Face {
       model.draw();
       //box(20,20,500);
       popMatrix();
+      
+      stroke(0);
+      line( finger.x, finger.y, finger.z, finger.x, finger.y, finger.z - 1000);
       
 //      ellipse( finger.x, finger.y, 20, 20 );
       
