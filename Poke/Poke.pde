@@ -35,8 +35,7 @@ boolean bGameEnded   = false;
 int     gameStartedAt = 0;
 int     lastSent     = 0;
 
-int opponentHitL;
-int opponentHitR;
+int missOpacity = 255;
 
 // layout stuff
 PFont   fontBig, fontSmall;
@@ -46,8 +45,6 @@ void setup() {
   size(1024, 768, P3D);
   smooth();
   
-  opponentHitL = 0;
-  opponentHitR = 0;
 
   myFace = new Face(this);
   theirFace = new Face(this);
@@ -245,7 +242,7 @@ void poke( PVector finger ){
       sb.send( "poke", name + ":1" );
       break;
     default:
-      // crickets
+      break;
   }
 }
 
